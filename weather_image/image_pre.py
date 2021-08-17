@@ -12,6 +12,10 @@ from matplotlib import pyplot as plt
 
 import cv2
 from PIL import Image
+
+
+
+
 gif = cv2.VideoCapture('dailysfc_20130502.gif')
 ret,frame = gif.read() # ret=True if it finds a frame else False. Since your gif contains only one frame, the next read() will give you ret=False
 img = Image.fromarray(frame)
@@ -54,6 +58,31 @@ output_img[np.where(thresh1==0)] = 1
 
 cv2.imshow('result', output_img)
 cv2.waitKey()
+
+# 连通域分析
+num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(thresh1, connectivity=8)
+
+# 查看各个返回值
+# 连通域数量
+print('num_labels = ',num_labels)
+# 连通域的信息：对应各个轮廓的x、y、width、height和面积
+print('stats = ',stats)
+# 连通域的中心点
+print('centroids = ',centroids)
+# 每一个像素的标签1、2、3.。。，同一个连通域的标签是一致的
+print('labels = ',labels)
+
+# 不同的连通域赋予不同的颜色
+output = np.zeros((gray.shape[0], gray.shape[1], 3), np.uint8)
+for i in range(1, num_labels):
+
+    mask = labels == i
+    output[:, :, 0][mask] = np.random.randint(0, 255)
+    output[:, :, 1][mask] = np.random.randint(0, 255)
+    output[:, :, 2][mask] = np.random.randint(0, 255)
+cv2.imshow('oginal', output)
+cv2.waitKey()
+
 
 # Now finding Contours         ###################
 '''
