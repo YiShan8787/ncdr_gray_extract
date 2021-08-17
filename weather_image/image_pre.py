@@ -46,7 +46,7 @@ erosion  = cv2.erode(dilation, kernel, iterations=4)
 cv2.imshow("erosion",erosion )
 cv2.waitKey()
 
-ret,thresh1 = cv2.threshold(erosion,127,255,cv2.THRESH_BINARY_INV)
+ret,thresh1 = cv2.threshold(erosion,50,255,cv2.THRESH_BINARY_INV)
 
 cv2.imshow("thresh",thresh1)
 cv2.waitKey()
@@ -64,15 +64,16 @@ num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(thresh1,
 
 # 查看各个返回值
 # 连通域数量
-print('num_labels = ',num_labels)
+#print('num_labels = ',num_labels)
 # 连通域的信息：对应各个轮廓的x、y、width、height和面积
-print('stats = ',stats)
+#print('stats = ',stats)
 # 连通域的中心点
-print('centroids = ',centroids)
+#print('centroids = ',centroids)
 # 每一个像素的标签1、2、3.。。，同一个连通域的标签是一致的
-print('labels = ',labels)
+#print('labels = ',labels)
 
 # 不同的连通域赋予不同的颜色
+'''
 output = np.zeros((gray.shape[0], gray.shape[1], 3), np.uint8)
 for i in range(1, num_labels):
 
@@ -81,6 +82,33 @@ for i in range(1, num_labels):
     output[:, :, 1][mask] = np.random.randint(0, 255)
     output[:, :, 2][mask] = np.random.randint(0, 255)
 cv2.imshow('oginal', output)
+cv2.waitKey()
+'''
+from numpy import interp
+
+lonRange = [90, 160] # flipped from descending to ascending
+latRange = [10,60]
+
+# the range of y and x pixels
+yRange = [0, gray.shape[0]]
+xRange = [0, gray.shape[1]]
+gray_three_channel = cv2.cvtColor(output_img, cv2.COLOR_GRAY2BGR)
+
+for k in range(centroids.shape[0]-1):
+    xPixel = centroids[k+1][0]
+    yPixel = centroids[k+1][1]
+    
+    lat = latRange[1] - interp(yPixel, yRange, latRange) # flipped again
+    lon = interp(xPixel, xRange, lonRange)
+    
+    #origin_cmp = cv2.drawContours(gray_invert.copy(),[box],0,(0,0,255),5)
+    
+    text2 = '(' + str(format(lon,'.2f')) + ', ' + str(format(lat,'.2f')) + ')'
+    
+    cv2.putText(gray_three_channel, text2, (int(xPixel), int(yPixel)), cv2.FONT_HERSHEY_TRIPLEX,
+      0.5, (0, 255, 255), 1, cv2.LINE_AA)
+
+cv2.imshow('origin_cmp', gray_three_channel)
 cv2.waitKey()
 
 
