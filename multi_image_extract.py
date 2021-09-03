@@ -69,25 +69,25 @@ for file in os.listdir(weather_path):
     gray =cv2.cvtColor(np.asarray(img), cv2.COLOR_BGR2GRAY)
     gray = gray[y:y+y_len,:]
     gray_invert = cv2.bitwise_not(gray)
-    cv2.imshow("img",gray)
+    #cv2.imshow("img",gray)
     cv2.waitKey()
     
     
     kernel = np.ones((4, 4), np.uint8)
     dilation = cv2.dilate(gray, kernel, iterations=3)
     
-    cv2.imshow("dil",dilation)
+    #cv2.imshow("dil",dilation)
     cv2.waitKey()
     
     
     erosion  = cv2.erode(dilation, kernel, iterations=4)
     
-    cv2.imshow("erosion",erosion )
+    #cv2.imshow("erosion",erosion )
     cv2.waitKey()
     
     ret,thresh1 = cv2.threshold(erosion,50,255,cv2.THRESH_BINARY_INV)
     
-    cv2.imshow("thresh",thresh1)
+    #cv2.imshow("thresh",thresh1)
     cv2.waitKey()
     
     # set my output img to zero everywhere except my mask
@@ -95,7 +95,7 @@ for file in os.listdir(weather_path):
     output_img[np.where(thresh1==0)] = 1
      
     
-    cv2.imshow('result', output_img)
+    #cv2.imshow('result', output_img)
     cv2.waitKey()
     
     # 连通域分析
@@ -127,7 +127,7 @@ for file in os.listdir(weather_path):
         cv2.putText(gray_three_channel, text2, (int(xPixel), int(yPixel)), cv2.FONT_HERSHEY_TRIPLEX,
           0.5, (0, 255, 255), 1, cv2.LINE_AA)
     
-    cv2.imshow('origin_cmp', gray_three_channel)
+    #cv2.imshow('origin_cmp', gray_three_channel)
     cv2.waitKey()
     out_path = extract_path + '\\' + file.split('.')[0] + suffix +'.' +image_type
     print(out_path)
