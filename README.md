@@ -6,7 +6,9 @@
  ## source code (recommend)
  
    1. modify the path in the .ini
+
    2. put the sample front image in the ./weather_image (default in .ini) folder
+
    3. use the .exe file
 
 # Sample image
